@@ -1,10 +1,9 @@
 const express = require('express');
 const { Client } = require('pg');
 const redis = require('redis');
-const redisClient = redis.createClient({host: 'devops_tp_pipeline'});
-
-// Constants
+const redisClient = redis.createClient({host: 'tp2_pipeline'});
 const PORT = 8080;
+
 const pg = new Client({
   user: "root",
   password: "password",
@@ -13,14 +12,10 @@ const pg = new Client({
   port: 5432,
 });
 
-// App
 const app = express();
 app.get('/', (req, res) => {
   res.send({ "message": "Hello World !" });
 
-});
-app.get('/api', (req, res) => {
-  res.send( { "message": "Hello World" });
 });
 app.get('/status', async (req, res) => {
   res.json({
