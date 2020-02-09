@@ -1,0 +1,53 @@
+version: '3.1'
+
+
+services:
+
+   api:
+      build:
+         context: "../"
+         dockerfile: "api/Dockerfile"
+      container_name: "nodejs"
+      environment:
+         - "NODE_ENV=production"
+      networks:
+         - "network-db"
+         - "network-nodejs"
+
+   nginx:
+      build:
+         context: "../nginx"
+         dockerfile: "Dockerfile"
+      environment:
+         - "HOSTNAME=api:8080"
+      depends_on:
+         - "api"
+      networks:
+         - "network-nodejs"
+      ports:
+         - "8080:80"
+
+   redis:
+      image: "redis:alpine"
+      container_name: devops_tp_pipeline
+      networks:
+         - network-db
+
+   postgres:
+      image: "postgres"
+      container_name: "postgres"
+      environment:
+         POSTGRES_USER: "root"
+         POSTGRES_PASSWORD: "password"
+         POSTGRES_DB: "myDB"
+         PGDATA: "/data/postgres"
+      depends_on:
+         - "redis"
+      networks:
+        - "network-db"
+
+  
+
+networks:
+   network-db:
+   network-nodejs:
